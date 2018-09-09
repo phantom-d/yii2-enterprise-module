@@ -1,0 +1,40 @@
+{
+    "name": "phantom-d/yii2-enterprise-module",
+    "description": "Yii2 enterprise module",
+    "type": "yii2-extension",
+    "keywords": ["yii2", "extension", "enterprise", "module"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Anton Ermolovich",
+            "email": "anton.ermolovich@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=7.0.0",
+        "ext-pdo_sqlite": "*",
+        "yiisoft/yii2": ">=2.0.13.1",
+        "bupy7/yii2-bbcode": "1.*"
+    },
+    "require-dev": {
+        "yiisoft/yii2-faker": "*",
+        "codeception/base": "^2.2.3",
+        "codeception/verify": "~0.3.1",
+        "codeception/specify": "*",
+        "codeception/phpbuiltinserver": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "enterprise\\": ""
+        }
+    },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://asset-packagist.org"
+        }
+    ],
+    "extra": {
+        "bootstrap": "enterprise\\Bootstrap"
+    }
+}
