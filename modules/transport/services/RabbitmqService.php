@@ -1,8 +1,8 @@
 <?php
-
 /**
- * @copyright Copyright (c) 2018, Anton Ermolovich <anton.ermolovich@gmail.com>
- * @license http://www.yiiframework.com/license/
+ * @link https://github.com/phantom-d/yii2-enterprise-module
+ * @copyright Copyright (c) 2018 Anton Ermolovich
+ * @license http://opensource.org/licenses/MIT
  */
 
 namespace enterprise\transport\services;
@@ -21,7 +21,6 @@ use yii\web\BadRequestHttpException;
  */
 class RabbitmqService extends BaseService
 {
-
     /**
      * @var array Последнее отправленное сообщение
      */
@@ -72,6 +71,7 @@ class RabbitmqService extends BaseService
      *     <tr><td>array</td><td><b>$params['client']</b></td><td>Connection parameters</td></tr>
      * </table>
      *
+     * {@inheritdoc}
      * @throws \mikemadisonweb\rabbitmq\exceptions\RuntimeException
      * @throws \yii\web\BadRequestHttpException
      */
@@ -147,9 +147,9 @@ class RabbitmqService extends BaseService
      * @param array $data Данные для отправки (See [[sendMessage]])
      * @param string $exchange Точка обмена
      * @param array $params Message params (See above)
+     * @throws \yii\InvalidArgumentException
      * @return boolean
      *
-     * @throws \yii\InvalidArgumentException
      */
     protected function prepareMessage($data, $exchange, $params = [])
     {

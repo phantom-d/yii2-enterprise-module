@@ -1,15 +1,15 @@
 <?php
-
 /**
- * @copyright Copyright (c) 2018, Anton Ermolovich <anton.ermolovich@gmail.com>
- * @license http://www.yiiframework.com/license/
+ * @link https://github.com/phantom-d/yii2-enterprise-module
+ * @copyright Copyright (c) 2018 Anton Ermolovich
+ * @license http://opensource.org/licenses/MIT
  */
 
 namespace enterprise\helpers;
 
-use yii\InvalidConfigException;
 use yii\helpers\Html;
 use yii\helpers\Inflector;
+use yii\base\InvalidConfigException;
 
 /**
  * Collection of useful helper functions for Yii Applications
@@ -21,7 +21,6 @@ use yii\helpers\Inflector;
  */
 class Enum extends Inflector
 {
-
     /**
      * @var array time intervals in seconds
      */
@@ -90,6 +89,7 @@ class Enum extends Inflector
      * @param string $length The display lenghts. Use "short" or "long".
      * @param array $customUnits Time units to display. Pass "false" to use all time units. Possible values: y, m, w, d, h, i, s.
      * @param string $separator The separator sign between time units.
+     * @param mixed $timeFormat
      *
      * @return string Formatted time with units like hours, minutes, seconds
      *
@@ -219,7 +219,6 @@ class Enum extends Inflector
      */
     public static function timeElapsed($fromTime = null, $human = true, $toTime = null, $append = null)
     {
-
         if ($append === null) {
             $append = ' ' . Yii::t('common', 'ago');
         }
@@ -245,7 +244,6 @@ class Enum extends Inflector
      */
     public static function timeInterval($interval, $append = null, $human = true)
     {
-
         $intervals = static::$intervals;
         $elapsed = '';
 
@@ -280,30 +278,6 @@ class Enum extends Inflector
             $elapsed = static::time2String($interval, $intervals);
         }
         return $elapsed . $append;
-    }
-
-    /**
-     * Get elapsed time converted to string
-     *
-     * Example Output:
-     *    1 year 5 months 3 days ago
-     *
-     * @param int   $time elapsed number of seconds
-     * @param array $intervals configuration of time intervals in seconds
-     *
-     * @return string
-     */
-    protected static function time2String($time, $intervals)
-    {
-        $output = '';
-        foreach ($intervals as $name => $seconds) {
-            $num = floor($time / $seconds);
-            $time -= ($num * $seconds);
-            if ($num > 0) {
-                $output .= $num . ' ' . $name . (($num > 1) ? 's' : '') . ' ';
-            }
-        }
-        return trim($output);
     }
 
     /**
@@ -347,51 +321,12 @@ class Enum extends Inflector
     }
 
     /**
-     * Recursive function used in number to words conversion. Converts three digits per pass.
-     *
-     * @param double $num the source number
-     * @param int    $tri the three digits converted per pass.
-     *
-     * @return string
-     */
-    protected static function convertTri($num, $tri)
-    {
-        // chunk the number ...xyz
-        $x = (int)($num / 1000);
-        $y = ($num / 100) % 10;
-        $z = $num % 100;
-
-        // init the output string
-        $str = '';
-        $ones = static::ones();
-        $tens = static::tens();
-        $triplets = static::triplets();
-
-        // do hundreds
-        if ($y > 0) {
-            $str = $ones[$y] . ' ' . Yii::t('common', 'hundred');
-        }
-
-        // do ones and tens
-        $str .= $z < 20 ? $ones[$z] : $tens[(int)($z / 10)] . $ones[$z % 10];
-
-        // add triplet modifier only if there is some output to be modified...
-        if ($str != '') {
-            $str .= $triplets[$tri];
-        }
-
-        // recursively process until valid thousands digit found
-        return $x > 0 ? static::convertTri($x, $tri + 1) . $str : $str;
-    }
-
-    /**
      * Generate list of ones
      *
      * @return array
      */
     public static function ones()
     {
-
         return [
             '',
             ' ' . Yii::t('common', 'one'),
@@ -423,7 +358,6 @@ class Enum extends Inflector
      */
     public static function tens()
     {
-
         return [
             '',
             '',
@@ -445,7 +379,6 @@ class Enum extends Inflector
      */
     public static function months()
     {
-
         return [
             1 => Yii::t('common', 'January'),
             Yii::t('common', 'February'),
@@ -469,7 +402,6 @@ class Enum extends Inflector
      */
     public static function days()
     {
-
         return [
             1 => Yii::t('common', 'Sunday'),
             Yii::t('common', 'Monday'),
@@ -488,7 +420,6 @@ class Enum extends Inflector
      */
     public static function triplets()
     {
-
         return [
             '',
             ' ' . Yii::t('common', 'thousand'),
@@ -512,8 +443,8 @@ class Enum extends Inflector
      * @param boolean $keys whether to set the array keys same as the values (defaults to false)
      * @param boolean $desc whether to sort the years descending (defaults to true)
      *
+     * @throws \yii\base\InvalidConfigException if $to < $from
      * @return array
-     * @throws InvalidConfigException if $to < $from
      */
     public static function yearList($from, $to = null, $keys = false, $desc = true)
     {
@@ -523,48 +454,8 @@ class Enum extends Inflector
         if ($to >= $from) {
             $years = ($desc) ? range($to, $from) : range($from, $to);
             return $keys ? array_combine($years, $years) : $years;
-        } else {
-            throw new InvalidConfigException("The 'year to' parameter must exceed 'year from'.");
         }
-    }
-
-    /**
-     * Generate a month or day array list for Gregorian calendar
-     *
-     * @param string $unit whether 'day' or 'month'
-     * @param bool   $abbr whether to return abbreviated day or month
-     * @param int    $start the first day or month to set. Defaults to `1`.
-     * @param string $case whether 'upper', lower', or null. If null, then the initcap case will be used.
-     *
-     * @return array list of days or months
-     * @throws InvalidConfigException
-     */
-    protected static function genCalList($unit = 'day', $abbr = false, $start = 1, $case = null)
-    {
-        $source = $unit == 'month' ? static::months() : static::days();
-        $total = count($source);
-        if ($start < 1 || $start > $total) {
-            throw new InvalidConfigException("The start '{$unit}' must be between 1 and {$total}.");
-        }
-        $converted = [];
-        foreach ($source as $key => $value) {
-            $data = $abbr ? substr($value, 0, 3) : $value;
-            if ($case == 'upper') {
-                $data = strtoupper($data);
-            } elseif ($case == 'lower') {
-                $data = strtolower($data);
-            }
-            if ($start == 1) {
-                $i = $key;
-            } else {
-                $i = $key - $start + 1;
-                if ($i < 1) {
-                    $i += $total;
-                }
-            }
-            $converted[$i] = $data;
-        }
-        return (ksort($converted) ? $converted : $source);
+        throw new InvalidConfigException("The 'year to' parameter must exceed 'year from'.");
     }
 
     /**
@@ -604,8 +495,8 @@ class Enum extends Inflector
      * @param bool $intervalFromZero whether to start incrementing intervals from zero if $from = 1.
      * @param bool $showLast whether to show the last date (set in $to) even if it does not match interval.
      *
+     * @throws \yii\base\InvalidConfigException
      * @return array
-     * @throws InvalidConfigException
      */
     public static function dateList($from = 1, $to = 31, $interval = 1, $intervalFromZero = true, $showLast = true)
     {
@@ -641,8 +532,8 @@ class Enum extends Inflector
      * @param integer $to the time to (defaults to 1).
      * @param bool    $padZero whether to pad zeros to the left of each time unit value.
      *
+     * @throws \yii\base\InvalidConfigException if $unit passed is invalid
      * @return array
-     * @throws InvalidConfigException if $unit passed is invalid
      */
     public static function timeList($unit, $interval = 1, $from = 0, $to = null, $padZero = true)
     {
@@ -689,7 +580,6 @@ class Enum extends Inflector
      */
     public static function boolList($false = null, $true = null)
     {
-
         return [
             false => empty($false) ? Yii::t('common', 'No') : $false, // == 0
             true  => empty($true) ? Yii::t('common', 'Yes') : $true, // == 1
@@ -878,7 +768,6 @@ class Enum extends Inflector
      */
     public static function getBrowser($common = false, $browsers = [], $agent = null)
     {
-
         if ($agent === null) {
             $agent = $_SERVER['HTTP_USER_AGENT'];
         }
@@ -957,6 +846,107 @@ class Enum extends Inflector
             }
         }
         return $info;
+    }
+
+    /**
+     * Get elapsed time converted to string
+     *
+     * Example Output:
+     *    1 year 5 months 3 days ago
+     *
+     * @param int   $time elapsed number of seconds
+     * @param array $intervals configuration of time intervals in seconds
+     *
+     * @return string
+     */
+    protected static function time2String($time, $intervals)
+    {
+        $output = '';
+        foreach ($intervals as $name => $seconds) {
+            $num = floor($time / $seconds);
+            $time -= ($num * $seconds);
+            if ($num > 0) {
+                $output .= $num . ' ' . $name . (($num > 1) ? 's' : '') . ' ';
+            }
+        }
+        return trim($output);
+    }
+
+    /**
+     * Recursive function used in number to words conversion. Converts three digits per pass.
+     *
+     * @param double $num the source number
+     * @param int    $tri the three digits converted per pass.
+     *
+     * @return string
+     */
+    protected static function convertTri($num, $tri)
+    {
+        // chunk the number ...xyz
+        $x = (int)($num / 1000);
+        $y = ($num / 100) % 10;
+        $z = $num % 100;
+
+        // init the output string
+        $str = '';
+        $ones = static::ones();
+        $tens = static::tens();
+        $triplets = static::triplets();
+
+        // do hundreds
+        if ($y > 0) {
+            $str = $ones[$y] . ' ' . Yii::t('common', 'hundred');
+        }
+
+        // do ones and tens
+        $str .= $z < 20 ? $ones[$z] : $tens[(int)($z / 10)] . $ones[$z % 10];
+
+        // add triplet modifier only if there is some output to be modified...
+        if ($str != '') {
+            $str .= $triplets[$tri];
+        }
+
+        // recursively process until valid thousands digit found
+        return $x > 0 ? static::convertTri($x, $tri + 1) . $str : $str;
+    }
+
+    /**
+     * Generate a month or day array list for Gregorian calendar
+     *
+     * @param string $unit whether 'day' or 'month'
+     * @param bool   $abbr whether to return abbreviated day or month
+     * @param int    $start the first day or month to set. Defaults to `1`.
+     * @param string $case whether 'upper', lower', or null. If null, then the initcap case will be used.
+     *
+     * @throws \yii\base\InvalidConfigException
+     * @return array list of days or months
+     */
+    protected static function genCalList($unit = 'day', $abbr = false, $start = 1, $case = null)
+    {
+        $source = $unit == 'month' ? static::months() : static::days();
+        $total = count($source);
+        if ($start < 1 || $start > $total) {
+            throw new InvalidConfigException("The start '{$unit}' must be between 1 and {$total}.");
+        }
+        $converted = [];
+        foreach ($source as $key => $value) {
+            $data = $abbr ? substr($value, 0, 3) : $value;
+            if ($case == 'upper') {
+                $data = strtoupper($data);
+            } elseif ($case == 'lower') {
+                $data = strtolower($data);
+            }
+            if ($start == 1) {
+                $i = $key;
+            } else {
+                $i = $key - $start + 1;
+                if ($i < 1) {
+                    $i += $total;
+                }
+            }
+            $converted[$i] = $data;
+        }
+        return (ksort($converted) ? $converted : $source);
     }
 
     /**

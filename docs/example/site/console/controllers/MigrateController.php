@@ -1,8 +1,8 @@
 <?php
-
 /**
- * @copyright Copyright (c) 2018, Anton Ermolovich <anton.ermolovich@gmail.com>
- * @license http://www.yiiframework.com/license/
+ * @link https://github.com/phantom-d/yii2-enterprise-module
+ * @copyright Copyright (c) 2018 Anton Ermolovich
+ * @license http://opensource.org/licenses/MIT
  */
 
 namespace modules\site\console\controllers;
@@ -14,7 +14,6 @@ namespace modules\site\console\controllers;
  */
 class MigrateController extends \yii\console\controllers\MigrateController
 {
-
     /**
      * @var string Имя таблицы в которой будут сохранена история миграций
      */

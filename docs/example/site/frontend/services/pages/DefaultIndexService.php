@@ -1,8 +1,8 @@
 <?php
-
 /**
- * @copyright Copyright (c) 2018, Anton Ermolovich <anton.ermolovich@gmail.com>
- * @license http://www.yiiframework.com/license/
+ * @link https://github.com/phantom-d/yii2-enterprise-module
+ * @copyright Copyright (c) 2018 Anton Ermolovich
+ * @license http://opensource.org/licenses/MIT
  */
 
 namespace modules\site\frontend\services\pages;
@@ -14,7 +14,6 @@ namespace modules\site\frontend\services\pages;
  */
 class DefaultIndexService extends \enterprise\Component
 {
-
     public function run()
     {
         return $this->module->services->site->index();

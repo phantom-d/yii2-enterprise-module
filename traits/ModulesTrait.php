@@ -1,8 +1,8 @@
 <?php
-
 /**
- * @copyright Copyright (c) 2018, Anton Ermolovich <anton.ermolovich@gmail.com>
- * @license http://www.yiiframework.com/license/
+ * @link https://github.com/phantom-d/yii2-enterprise-module
+ * @copyright Copyright (c) 2018 Anton Ermolovich
+ * @license http://opensource.org/licenses/MIT
  */
 
 namespace enterprise\traits;
@@ -22,7 +22,6 @@ use yii\helpers\Inflector;
  */
 trait ModulesTrait
 {
-
     /**
      * @var \enterprise\Module|\yii\web\Application|\yii\console\Application Parent module
      */
@@ -42,6 +41,45 @@ trait ModulesTrait
      * @var string Component path
      */
     private $_path;
+
+    /**
+     * Getter magic method.
+     * This method is overridden to support accessing components like reading properties.
+     *
+     * @param string $name component or property name
+     * @return mixed the named property value
+     */
+    public function __get($name)
+    {
+        if ($this instanceof \yii\db\ActiveRecordInterface) {
+            return parent::__get($name);
+        }
+
+        if ($this->module->has($name)) {
+            return $this->module->get($name);
+        }
+
+        return parent::__get($name);
+    }
+
+    /**
+     * Checks if a property value is null.
+     * This method overrides the parent implementation by checking if the named component is loaded.
+     * @param string $name the property name or the event name
+     * @return bool whether the property value is null
+     */
+    public function __isset($name)
+    {
+        if ($this instanceof \yii\db\ActiveRecordInterface) {
+            return parent::__isset($name);
+        }
+
+        if ($this->module->has($name)) {
+            return true;
+        }
+
+        return parent::__isset($name);
+    }
 
     /**
      * Initializes the object.
@@ -154,44 +192,5 @@ trait ModulesTrait
     public function getShortName()
     {
         return StringHelper::basename(get_called_class());
-    }
-
-    /**
-     * Getter magic method.
-     * This method is overridden to support accessing components like reading properties.
-     *
-     * @param string $name component or property name
-     * @return mixed the named property value
-     */
-    public function __get($name)
-    {
-        if ($this instanceof \yii\db\ActiveRecordInterface) {
-            return parent::__get($name);
-        }
-
-        if ($this->module->has($name)) {
-            return $this->module->get($name);
-        }
-
-        return parent::__get($name);
-    }
-
-    /**
-     * Checks if a property value is null.
-     * This method overrides the parent implementation by checking if the named component is loaded.
-     * @param string $name the property name or the event name
-     * @return bool whether the property value is null
-     */
-    public function __isset($name)
-    {
-        if ($this instanceof \yii\db\ActiveRecordInterface) {
-            return parent::__isset($name);
-        }
-
-        if ($this->module->has($name)) {
-            return true;
-        }
-
-        return parent::__isset($name);
     }
 }

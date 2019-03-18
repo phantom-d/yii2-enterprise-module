@@ -1,8 +1,8 @@
 <?php
-
 /**
- * @copyright Copyright (c) 2018, Anton Ermolovich <anton.ermolovich@gmail.com>
- * @license http://www.yiiframework.com/license/
+ * @link https://github.com/phantom-d/yii2-enterprise-module
+ * @copyright Copyright (c) 2018 Anton Ermolovich
+ * @license http://opensource.org/licenses/MIT
  */
 
 namespace enterprise\controllers;
@@ -22,7 +22,6 @@ use yii\InvalidConfigException;
  */
 abstract class ConsoleController extends \yii\console\Controller
 {
-
     use ConsoleTrait,
         ControllerTrait {
         ControllerTrait::beforeAction as parentBeforeAction;
@@ -32,8 +31,8 @@ abstract class ConsoleController extends \yii\console\Controller
      * {@inheritdoc}
      *
      * @param Action $action
-     * @return type
      * @throws InvalidConfigException
+     * @return bool whether the action should continue to run.
      */
     public function beforeAction($action)
     {

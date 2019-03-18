@@ -1,8 +1,8 @@
 <?php
-
 /**
- * @copyright Copyright (c) 2018, Anton Ermolovich <anton.ermolovich@gmail.com>
- * @license http://www.yiiframework.com/license/
+ * @link https://github.com/phantom-d/yii2-enterprise-module
+ * @copyright Copyright (c) 2018 Anton Ermolovich
+ * @license http://opensource.org/licenses/MIT
  */
 
 namespace enterprise\transport\models\rabbitmq;
@@ -24,7 +24,6 @@ use yii\helpers\Json;
  */
 class Message extends \enterprise\models\Model
 {
-
     /**
      * @var array Информационный заголовок. (мета данные)
      */

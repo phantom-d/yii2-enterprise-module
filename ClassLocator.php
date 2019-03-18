@@ -1,15 +1,15 @@
 <?php
-
 /**
- * @copyright Copyright (c) 2018, Anton Ermolovich <anton.ermolovich@gmail.com>
- * @license http://www.yiiframework.com/license/
+ * @link https://github.com/phantom-d/yii2-enterprise-module
+ * @copyright Copyright (c) 2018 Anton Ermolovich
+ * @license http://opensource.org/licenses/MIT
  */
 
 namespace enterprise;
 
 use yii\base\Component;
-use yii\UnknownClassException;
-use yii\UnknownMethodException;
+use yii\base\UnknownClassException;
+use yii\base\UnknownMethodException;
 use yii\di\Instance;
 use yii\helpers\Inflector;
 
@@ -22,7 +22,6 @@ use yii\helpers\Inflector;
  */
 abstract class ClassLocator extends Component
 {
-
     /**
      * @var string Component ID
      */
@@ -66,6 +65,81 @@ abstract class ClassLocator extends Component
     /**
      * {@inheritdoc}
      */
+    public function __call($name, $params)
+    {
+        try {
+            $parts = explode('-', Inflector::camel2id($name));
+
+            $names = [];
+            $object = null;
+
+            while (count($parts)) {
+                $lastPart = array_pop($parts);
+                array_unshift($names, $lastPart);
+
+                $classParts = Inflector::id2camel(implode('-', $parts));
+
+                $class = ucfirst($classParts);
+                $this->_strict = false;
+                if ($object = $this->getObject($class)) {
+                    break;
+                }
+            }
+
+            if (empty($object)) {
+                if (YII_ENV_DEV) {
+                    $message = \Yii::t('yii', 'Not found model class: {class}', ['class' => $name]);
+                } else {
+                    $message = \Yii::t('yii', 'Internal server error');
+                }
+                throw new UnknownClassException($message);
+            }
+
+            $methodParts = Inflector::id2camel(implode('-', $names));
+
+            $method = lcfirst($methodParts);
+
+            if ($method && method_exists($object, $method)) {
+                return call_user_func_array([$object, $method], $params);
+            }
+
+            if ($this->throwParents && $this->module && $this->module->module) {
+                return call_user_func_array([$this->module->module->{$this->id}, $name], $params);
+            }
+
+            if (YII_ENV_DEV) {
+                $message = \Yii::t(
+                    'yii', //
+                    'Calling unknown method: {class}::{method}', //
+                    ['class' => $object->className(), 'method' => $method,]
+                );
+            } else {
+                $message = \Yii::t('yii', 'Internal server error');
+            }
+
+            throw new UnknownMethodException($message);
+        } catch (\Exception $e) {
+            throw $e;
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function __get($name)
+    {
+        if ($object = $this->getObject($name, [], false)) {
+            return $object;
+        }
+        if ($this->throwParents && $this->module && $this->module->module) {
+            return $this->module->module->{$this->id}->{$name};
+        }
+        return parent::__get($name);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function init()
     {
         if ($this->defaultNamespace === null) {
@@ -99,9 +173,8 @@ abstract class ClassLocator extends Component
      * @param boolean $strict Strict mode
      * @param boolean $parent Throw parent modules
      *
+     * @throws \yii\base\UnknownClassException
      * @return \yii\Object
-     *
-     * @throws UnknownClassException
      */
     public function getObject($name, $params = [], $strict = null, $parent = null)
     {
@@ -188,88 +261,12 @@ abstract class ClassLocator extends Component
                     $message = \Yii::t('yii', 'Internal server error');
                 }
                 throw new UnknownClassException($message);
-            } else {
-                $this->_strict = true;
             }
+            $this->_strict = true;
         } catch (\Exception $e) {
             throw $e;
         }
 
         return null;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function __call($name, $params)
-    {
-        try {
-            $parts = explode('-', Inflector::camel2id($name));
-
-            $names = [];
-            $object = null;
-
-            while (count($parts)) {
-                $lastPart = array_pop($parts);
-                array_unshift($names, $lastPart);
-
-                $classParts = Inflector::id2camel(implode('-', $parts));
-
-                $class = ucfirst($classParts);
-                $this->_strict = false;
-                if ($object = $this->getObject($class)) {
-                    break;
-                }
-            }
-
-            if (empty($object)) {
-                if (YII_ENV_DEV) {
-                    $message = \Yii::t('yii', 'Not found model class: {class}', ['class' => $name]);
-                } else {
-                    $message = \Yii::t('yii', 'Internal server error');
-                }
-                throw new UnknownClassException($message);
-            }
-
-            $methodParts = Inflector::id2camel(implode('-', $names));
-
-            $method = lcfirst($methodParts);
-
-            if ($method && method_exists($object, $method)) {
-                return call_user_func_array([$object, $method], $params);
-            }
-
-            if ($this->throwParents && $this->module && $this->module->module) {
-                return call_user_func_array([$this->module->module->{$this->id}, $name], $params);
-            }
-
-            if (YII_ENV_DEV) {
-                $message = \Yii::t(
-                    'yii', //
-                    'Calling unknown method: {class}::{method}', //
-                    ['class' => $object->className(), 'method' => $method,]
-                );
-            } else {
-                $message = \Yii::t('yii', 'Internal server error');
-            }
-
-            throw new UnknownMethodException($message);
-        } catch (\Exception $e) {
-            throw $e;
-        }
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function __get($name)
-    {
-        if ($object = $this->getObject($name, [], false)) {
-            return $object;
-        }
-        if ($this->throwParents && $this->module && $this->module->module) {
-            return $this->module->module->{$this->id}->{$name};
-        }
-        return parent::__get($name);
     }
 }

@@ -1,8 +1,8 @@
 <?php
-
 /**
- * @copyright Copyright (c) 2018, Anton Ermolovich <anton.ermolovich@gmail.com>
- * @license http://www.yiiframework.com/license/
+ * @link https://github.com/phantom-d/yii2-enterprise-module
+ * @copyright Copyright (c) 2018 Anton Ermolovich
+ * @license http://opensource.org/licenses/MIT
  */
 
 namespace enterprise\transport\services;
@@ -19,7 +19,6 @@ use yii\InvalidConfigException;
  */
 abstract class BaseService extends \enterprise\Component
 {
-
     /**
      * @var array Connection parameters
      */
@@ -53,7 +52,7 @@ abstract class BaseService extends \enterprise\Component
      * @param array $params Parameters (see above)
      * @param boolean $buffer Save to buffer
      */
-    abstract public function send($url, $data, $params = [], $buffer = true);
+    abstract public function send(string $url, array $data, array $params = [], bool $buffer = true);
 
     /**
      * Connection

@@ -1,8 +1,8 @@
 <?php
-
 /**
- * @copyright Copyright (c) 2018, Anton Ermolovich <anton.ermolovich@gmail.com>
- * @license http://www.yiiframework.com/license/
+ * @link https://github.com/phantom-d/yii2-enterprise-module
+ * @copyright Copyright (c) 2018 Anton Ermolovich
+ * @license http://opensource.org/licenses/MIT
  */
 
 namespace enterprise\helpers;
@@ -17,7 +17,6 @@ use yii\di\Instance;
  */
 class StringHelper extends \yii\helpers\StringHelper
 {
-
     /**
      * Возвращает отформатированный массив для вывода
      *

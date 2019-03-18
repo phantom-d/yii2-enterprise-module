@@ -1,8 +1,8 @@
 <?php
-
 /**
- * @copyright Copyright (c) 2018, Anton Ermolovich <anton.ermolovich@gmail.com>
- * @license http://www.yiiframework.com/license/
+ * @link https://github.com/phantom-d/yii2-enterprise-module
+ * @copyright Copyright (c) 2018 Anton Ermolovich
+ * @license http://opensource.org/licenses/MIT
  */
 
 namespace enterprise\traits;
@@ -23,7 +23,6 @@ use yii\helpers\StringHelper;
  */
 trait ConsoleTrait
 {
-
     public $logConfig = [
         'dateTime' => true,
         'dir'      => 'cron/logs',
@@ -39,24 +38,6 @@ trait ConsoleTrait
      * @var string Module, controller and action underscore separated
      */
     private $_processName;
-
-    /**
-     * Get process name
-     *
-     * @return string
-     */
-    protected function getProcessName()
-    {
-        if (empty($this->_processName)) {
-            $this->_processName = str_replace('/', '_', $this->route);
-            if (isset($this->action) && $this->action->processNameArgs) {
-                $params = \Yii::$app->request->params;
-                array_shift($params);
-                $this->_processName .= ' ' . implode(' ', $params);
-            }
-        }
-        return $this->_processName;
-    }
 
     /**
      * Get full path to pid file
@@ -95,6 +76,36 @@ trait ConsoleTrait
     }
 
     /**
+     * Get classname without namespace
+     *
+     * @param null|mixed $object
+     * @return string
+     */
+    public function shortClassName($object = null)
+    {
+        $class = is_object($object) ? get_class($object) : get_called_class();
+        return StringHelper::basename($class);
+    }
+
+    /**
+     * Get process name
+     *
+     * @return string
+     */
+    protected function getProcessName()
+    {
+        if (empty($this->_processName)) {
+            $this->_processName = str_replace('/', '_', $this->route);
+            if (isset($this->action) && $this->action->processNameArgs) {
+                $params = \Yii::$app->request->params;
+                array_shift($params);
+                $this->_processName .= ' ' . implode(' ', $params);
+            }
+        }
+        return $this->_processName;
+    }
+
+    /**
      * Rename process name
      *
      * @param string $prefix Prefix for the process name
@@ -107,17 +118,6 @@ trait ConsoleTrait
         }
 
         cli_set_process_title($this->processName);
-    }
-
-    /**
-     * Get classname without namespace
-     *
-     * @return string
-     */
-    public function shortClassName($object = null)
-    {
-        $class = is_object($object) ? get_class($object) : get_called_class();
-        return StringHelper::basename($class);
     }
 
     /**
@@ -154,17 +154,6 @@ trait ConsoleTrait
     }
 
     /**
-     * Show message in console
-     *
-     * @param string $message Message
-     */
-    private function _writeConsole($message)
-    {
-        $out = Console::ansiFormat('[' . date('Y-m-d H:i:s') . '] ', [Console::BOLD]);
-        $this->stdout($out . $message . "\n");
-    }
-
-    /**
      * Adjusting logger. You can override it.
      */
     protected function initLogger()
@@ -176,5 +165,16 @@ trait ConsoleTrait
         }
 
         $this->module->componentsLogger($this->logConfig);
+    }
+
+    /**
+     * Show message in console
+     *
+     * @param string $message Message
+     */
+    private function _writeConsole($message)
+    {
+        $out = Console::ansiFormat('[' . date('Y-m-d H:i:s') . '] ', [Console::BOLD]);
+        $this->stdout($out . $message . "\n");
     }
 }

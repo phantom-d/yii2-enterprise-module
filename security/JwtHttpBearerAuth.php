@@ -1,8 +1,8 @@
 <?php
-
 /**
- * @copyright Copyright (c) 2018, Anton Ermolovich <anton.ermolovich@gmail.com>
- * @license http://www.yiiframework.com/license/
+ * @link https://github.com/phantom-d/yii2-enterprise-module
+ * @copyright Copyright (c) 2018 Anton Ermolovich
+ * @license http://opensource.org/licenses/MIT
  */
 
 namespace enterprise\security;
@@ -32,7 +32,6 @@ use yii\filters\auth\AuthMethod;
  */
 class JwtHttpBearerAuth extends AuthMethod
 {
-
     /**
      * @var \enterprise\security\Jwt|string|array the [[Jwt]] object or the application component ID of the [[Jwt]].
      */

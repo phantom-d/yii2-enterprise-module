@@ -1,0 +1,45 @@
+<?php
+$header = <<<'EOF'
+@link https://github.com/phantom-d/yii2-enterprise-module
+@copyright Copyright (c) 2018 Anton Ermolovich
+@license http://opensource.org/licenses/MIT
+EOF;
+
+$finder = PhpCsFixer\Finder::create()
+    ->exclude('vendor')
+    ->in(__DIR__);
+
+return PhpCsFixer\Config::create()
+    ->setRiskyAllowed(true)
+    ->setRules([
+        '@PSR1' => true,
+        '@PSR2' => true,
+        'header_comment' => [
+            'commentType' => 'PHPDoc',
+            'header' => $header,
+            'separate' => 'bottom',
+        ],
+        'array_syntax' => [
+            'syntax' => 'short',
+        ],
+        'combine_consecutive_unsets' => true,
+        'no_extra_consecutive_blank_lines' => [
+            'break',
+            'continue',
+            'extra',
+            'return',
+            'throw',
+            'use',
+            'parenthesis_brace_block',
+            'square_brace_block',
+            'curly_brace_block',
+        ],
+        'no_useless_else' => true,
+        'no_useless_return' => true,
+        'ordered_class_elements' => true,
+        'ordered_imports' => true,
+        'phpdoc_add_missing_param_annotation' => true,
+        'phpdoc_order' => true,
+        'phpdoc_align' => false,
+    ])
+    ->setFinder($finder);

@@ -1,21 +1,20 @@
 <?php
-
 /**
- * @copyright Copyright (c) 2018, Anton Ermolovich <anton.ermolovich@gmail.com>
- * @license http://www.yiiframework.com/license/
+ * @link https://github.com/phantom-d/yii2-enterprise-module
+ * @copyright Copyright (c) 2018 Anton Ermolovich
+ * @license http://opensource.org/licenses/MIT
  */
 
 namespace enterprise\components;
 
-use yii\log\Logger;
 use yii\helpers\VarDumper;
+use yii\log\Logger;
 
 /**
  * FileTarget records log messages in a file. Overided.
  */
 class FileTarget extends \yii\log\FileTarget
 {
-
     /**
      * Formats a log message for display as a string.
      * @param array $message the log message to be formatted.

@@ -1,8 +1,8 @@
 <?php
-
 /**
- * @copyright Copyright (c) 2018, Anton Ermolovich <anton.ermolovich@gmail.com>
- * @license http://www.yiiframework.com/license/
+ * @link https://github.com/phantom-d/yii2-enterprise-module
+ * @copyright Copyright (c) 2018 Anton Ermolovich
+ * @license http://opensource.org/licenses/MIT
  */
 
 namespace enterprise\transport\services;
@@ -20,7 +20,6 @@ use yii\web\BadRequestHttpException;
  */
 class SoapService extends BaseService
 {
-
     /**
      * <table cellspacing="0">
      *     <tr>
@@ -34,6 +33,7 @@ class SoapService extends BaseService
      *         <td>Массив настроек (see [[\SoapClient::SoapClient]])</td></tr>
      * </table>
      *
+     * @param mixed $params
      * @return $this
      */
     public function setConnection($params)
@@ -63,9 +63,9 @@ class SoapService extends BaseService
 
     /**
      * {@inheritdoc}
-     * @return \SoapClient
      * @throws \yii\InvalidConfigException
      * @throws \yii\Exception
+     * @return \SoapClient
      */
     protected function getClient(): \SoapClient
     {

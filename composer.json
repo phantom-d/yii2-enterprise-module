@@ -18,10 +18,19 @@
     },
     "require-dev": {
         "yiisoft/yii2-faker": "*",
+        "friendsofphp/php-cs-fixer": "*",
+        "brainmaestro/composer-git-hooks": "*",
         "codeception/base": "^2.2.3",
         "codeception/verify": "~0.3.1",
         "codeception/specify": "*",
         "codeception/phpbuiltinserver": "*"
+    },
+    "scripts": {
+        "test": "./vendor/bin/phpunit",
+        "post-install-cmd": "./vendor/bin/cghooks add --ignore-lock",
+        "post-update-cmd": "./vendor/bin/cghooks update",
+        "check-style": "./vendor/bin/php-cs-fixer fix --using-cache=no --diff --dry-run .",
+        "fix-style": "./vendor/bin/php-cs-fixer fix --using-cache=no ."
     },
     "autoload": {
         "psr-4": {
@@ -35,6 +44,10 @@
         }
     ],
     "extra": {
-        "bootstrap": "enterprise\\Bootstrap"
+        "bootstrap": "enterprise\\Bootstrap",
+        "hooks": {
+            "pre-commit": "composer fix-style",
+            "post-commit": "composer check-style"
+        }
     }
 }

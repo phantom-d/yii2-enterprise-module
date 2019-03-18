@@ -1,8 +1,8 @@
 <?php
-
 /**
- * @copyright Copyright (c) 2018, Anton Ermolovich <anton.ermolovich@gmail.com>
- * @license http://www.yiiframework.com/license/
+ * @link https://github.com/phantom-d/yii2-enterprise-module
+ * @copyright Copyright (c) 2018 Anton Ermolovich
+ * @license http://opensource.org/licenses/MIT
  */
 
 namespace enterprise\helpers;
@@ -14,7 +14,6 @@ use yii\helpers\UnsetArrayValue;
 
 class ArrayHelper extends BaseArrayHelper
 {
-
     /**
      * Merges two or more arrays into one recursively.
      * If each array has an element with the same string key value, the latter
@@ -79,7 +78,7 @@ class ArrayHelper extends BaseArrayHelper
      * Замена точек в ключах массива
      *
      * @param string|array $param
-     * @param boolean $inner
+     * @param bool $start
      * @return array|string
      */
     public static function dotRemover($param, $start = true)

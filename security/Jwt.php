@@ -1,8 +1,8 @@
 <?php
-
 /**
- * @copyright Copyright (c) 2018, Anton Ermolovich <anton.ermolovich@gmail.com>
- * @license http://www.yiiframework.com/license/
+ * @link https://github.com/phantom-d/yii2-enterprise-module
+ * @copyright Copyright (c) 2018 Anton Ermolovich
+ * @license http://opensource.org/licenses/MIT
  */
 
 namespace enterprise\security;
@@ -17,7 +17,7 @@ use Lcobucci\JWT\Signer;
 use Lcobucci\JWT\Signer\Keychain;
 use Lcobucci\JWT\Token;
 use Lcobucci\JWT\ValidationData;
-use yii\InvalidParamException;
+use yii\base\InvalidParamException;
 
 /**
  * JSON Web Token implementation, based on this library:
@@ -55,7 +55,6 @@ use yii\InvalidParamException;
  */
 class Jwt extends \enterprise\Component
 {
-
     /**
      * @var array Supported algorithms
      * @todo Add RSA, ECDSA suppport
@@ -99,7 +98,7 @@ class Jwt extends \enterprise\Component
 
     /**
      * {@inheritdoc}
-     * @throws InvalidParamException
+     * @throws \yii\base\InvalidParamException
      */
     public function init()
     {
@@ -115,8 +114,8 @@ class Jwt extends \enterprise\Component
      *
      * @param \Lcobucci\JWT\Signer $signer
      *
+     * @throws \yii\base\InvalidParamException
      * @return \Lcobucci\JWT\Signer\Key[]
-     * @throws \yii\InvalidParamException
      */
     public function getKeys(Signer $signer)
     {
@@ -198,6 +197,7 @@ class Jwt extends \enterprise\Component
 
     /**
      * @see [[Lcobucci\JWT\ValidationData::__construct()]]
+     * @param null|mixed $currentTime
      * @return \Lcobucci\JWT\ValidationData
      */
     public function getValidationData($currentTime = null)
@@ -209,8 +209,8 @@ class Jwt extends \enterprise\Component
      * Return Signer of algorithm
      *
      * @param string $algorithm
-     * @return \Lcobucci\JWT\Signer
      * @throws \InvalidArgumentException
+     * @return \Lcobucci\JWT\Signer
      */
     public function getSigner($algorithm)
     {
@@ -250,6 +250,8 @@ class Jwt extends \enterprise\Component
      * Parses the JWT and returns a token class
      *
      * @param string $token JWT
+     * @param bool $validate
+     * @param bool $verify
      * @return \Lcobucci\JWT\Token|null
      */
     public function loadToken($token, $validate = true, $verify = true)
@@ -279,6 +281,7 @@ class Jwt extends \enterprise\Component
      * Validate token
      *
      * @param \Lcobucci\JWT\Token $token token object
+     * @param null|mixed $currentTime
      * @return bool
      */
     public function validateToken(Token $token, $currentTime = null)
